@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MADMall | A Home Away From Home</title>
+  <meta name="description" content="A governed cultural sanctuary for Black women navigating Graves' disease — retail, jazz, comedy, wellness, learning, community, and care." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ---- ZMUX Sanctuary Design Tokens ---- */
+    :root {
+      --vellum: #fcfaf2;
+      --vellum-trans: rgba(252,250,242,0.75);
+      --ink: #141414;
+      --soul-gold: #b38b4d;
+      --terracotta: #a65d45;
+      --clinical-teal: #4b6a6d;
+      --diffusion-blur: 18px;
+      --monolithic-shadow: 20px 20px 60px rgba(0,0,0,0.08), -10px -10px 40px rgba(255,255,255,0.8);
+      --bg-base: #e5e0d5;
+      --bg-warm: #f5f0e8;
+      --background: var(--bg-base);
+      --foreground: var(--ink);
+      --muted-foreground: rgba(20,20,20,0.6);
+      --border: rgba(255,255,255,0.4);
+      --radius-sm: 15px;
+      --radius-md: 30px;
+      --radius-lg: 40px;
+      --radius-xl: 60px;
+      --verified: #4a9b6d;
+    }
+
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-base);
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-attachment: fixed;
+      color: var(--ink);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    h1,h2,h3,h4,h5,h6 { font-weight: 700; text-transform: uppercase; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--vellum); }
+    ::-webkit-scrollbar-thumb { background: var(--soul-gold); border-radius: 10px; }
+
+    /* ---- Layout helpers ---- */
+    .container { max-width: 1152px; margin: 0 auto; padding: 0 1.5rem; }
+    @media (min-width: 768px) { .container { padding: 0 2.5rem; } }
+
+    /* ---- ZMUX Components ---- */
+    .viz-card {
+      background: rgba(255,255,255,0.4);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      transition: 0.5s;
+    }
+    .viz-card:hover { background: var(--vellum); transform: translateY(-5px); }
+
+    .status-pill {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(20,20,20,0.18);
+      border-radius: 100px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--ink);
+    }
+
+    .viz-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    .soul-tag {
+      background: var(--terracotta);
+      color: white;
+      padding: 2px 8px;
+      font-size: 10px;
+      border-radius: 3px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .btn-monolithic {
+      background: var(--ink);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 100px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: 0.3s;
+      display: inline-block;
+    }
+    .btn-monolithic:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+
+    .btn-gold {
+      background: var(--soul-gold);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 100px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: 0.3s;
+      display: inline-block;
+    }
+    .btn-gold:hover { background: #9a7040; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fadeIn 1.2s ease-out; }
+
+    /* ---- Image frames ---- */
+    .frame {
+      border-radius: var(--radius-lg);
+      box-shadow: var(--monolithic-shadow);
+      overflow: hidden;
+    }
+
+    /* ---- Kicker ---- */
+    .kicker { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .kicker-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--muted-foreground); }
+
+    /* ---- Header ---- */
+    .site-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.75rem 0;
+    }
+    .logo { display: flex; align-items: center; gap: 0.75rem; }
+    .logo-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--soul-gold); display: inline-block; }
+    .logo-text { font-size: 1.125rem; font-weight: 700; letter-spacing: 0.3em; color: var(--ink); }
+
+    /* ---- Hero ---- */
+    .hero-section { margin-bottom: 0; }
+    .hero-wrap { position: relative; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--monolithic-shadow); }
+    .hero-img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 16/9; display: block; }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(105deg, rgba(252,250,242,0.94) 0%, rgba(252,250,242,0.78) 34%, rgba(252,250,242,0.15) 62%, transparent 100%);
+    }
+    .hero-content {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 2rem 2rem;
+    }
+    @media (min-width: 768px) { .hero-content { padding: 2rem 4rem; } }
+    .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--terracotta); margin-bottom: 1rem; }
+    .hero-h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 0.92; color: var(--ink); max-width: 14ch; margin-bottom: 1.5rem; }
+    .hero-sub { font-size: clamp(0.9rem, 1.5vw, 1.125rem); line-height: 1.7; color: var(--ink); opacity: 0.78; max-width: 32ch; margin-bottom: 2rem; }
+    .hero-ctas { display: flex; flex-wrap: wrap; gap: 1rem; }
+
+    /* ---- Mission band ---- */
+    .mission { padding: 6rem 0; text-align: center; }
+    .mission-eyebrow { margin-bottom: 1.5rem; }
+    .mission-body { font-size: clamp(1.25rem, 2.5vw, 1.75rem); line-height: 1.5; color: var(--ink); font-weight: 500; max-width: 52ch; margin: 0 auto; }
+
+    /* ---- Directory ---- */
+    .directory { padding-bottom: 6rem; }
+    .dir-eyebrow { margin-bottom: 2rem; }
+    .dir-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    @media (min-width: 768px) { .dir-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; } }
+    .dir-card { display: block; padding: 1.5rem; }
+    .dir-card h3 { margin-top: 1rem; font-size: 1.05rem; line-height: 1.25; color: var(--ink); }
+    .dir-num { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; opacity: 0.5; margin-top: 0.75rem; display: block; color: var(--muted-foreground); }
+
+    /* ---- Room bands ---- */
+    .room-band { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: stretch; margin-bottom: 7rem; }
+    @media (min-width: 768px) { .room-band { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+    .room-band .room-img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4/5; display: block; }
+    .room-text { display: flex; flex-direction: column; justify-content: center; padding: 0.5rem 0; }
+    .room-h2 { font-size: clamp(1.75rem, 3.5vw, 3rem); line-height: 1.02; color: var(--ink); margin-bottom: 1.25rem; }
+    .room-body { line-height: 1.7; color: var(--muted-foreground); margin-bottom: 1.5rem; }
+    .room-list { display: flex; flex-direction: column; gap: 0.75rem; list-style: none; }
+    .room-list li { border-left: 2px solid var(--soul-gold); padding-left: 1rem; }
+    .room-list li .item-title { display: block; font-weight: 700; color: var(--ink); }
+    .room-list li .item-desc  { display: block; font-size: 0.875rem; color: var(--muted-foreground); }
+    .room-list.teal li { border-left-color: var(--clinical-teal); }
+    .pills { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+    /* ---- Wellness note ---- */
+    .wellness-note {
+      border-left: 4px solid var(--clinical-teal);
+      border-radius: var(--radius-sm);
+      background: rgba(75,106,109,0.08);
+      padding: 1rem 1.25rem;
+      color: var(--ink);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .wellness-note strong { color: var(--clinical-teal); }
+    .wellness-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+    @media (min-width: 640px) { .wellness-grid { grid-template-columns: 1fr 1fr; } }
+
+    /* ---- Commons full-bleed ---- */
+    .commons-wrap { position: relative; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--monolithic-shadow); margin-bottom: 7rem; }
+    .commons-img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 16/9; display: block; }
+    .commons-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(0deg, rgba(20,20,20,0.85) 0%, rgba(20,20,20,0.35) 45%, transparent 75%);
+    }
+    .commons-text { position: absolute; inset-x: 0; bottom: 0; padding: 2rem 2rem 2.5rem; }
+    @media (min-width: 768px) { .commons-text { padding: 2.5rem 3.5rem 3.5rem; } }
+    .commons-h2 { font-size: clamp(1.75rem, 3vw, 3rem); color: var(--vellum); margin-bottom: 0.75rem; }
+    .commons-body { color: rgba(252,250,242,0.82); line-height: 1.7; max-width: 56ch; }
+    .commons-kicker-label { color: rgba(252,250,242,0.65); }
+
+    /* ---- Footer ---- */
+    .site-footer { border-top: 1px solid var(--border); padding: 3rem 0; text-align: center; }
+
+    /* ---- Safety Layer ---- */
+    #exit-btn {
+      position: fixed; top: 1rem; right: 1rem; z-index: 9999;
+      background: var(--ink); color: var(--vellum);
+      border: none; border-radius: 100px;
+      padding: 0.6rem 1.2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      transition: 0.2s;
+    }
+    #exit-btn:hover { background: #2a2a2a; }
+
+    #panic-btn {
+      position: fixed; bottom: 1rem; right: 1rem; z-index: 9999;
+      background: var(--terracotta); color: white;
+      border: none; border-radius: 100px;
+      padding: 0.85rem 1.3rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(166,93,69,0.45);
+      animation: pulsePanic 2.5s infinite;
+    }
+    @keyframes pulsePanic {
+      0%,100% { box-shadow: 0 10px 30px rgba(166,93,69,0.45); }
+      50%      { box-shadow: 0 10px 40px rgba(166,93,69,0.75); }
+    }
+
+    #grounding-btn {
+      position: fixed; bottom: 1rem; left: 1rem; z-index: 9999;
+      background: var(--clinical-teal); color: white;
+      border: none; border-radius: 100px;
+      padding: 0.85rem 1.3rem;
+      font-weight: 700; font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(75,106,109,0.35);
+    }
+
+    #grounding-modal {
+      display: none;
+      position: fixed; inset: 0; z-index: 10000;
+      background: rgba(20,20,20,0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      align-items: center; justify-content: center; padding: 1.25rem;
+    }
+    #grounding-modal.open { display: flex; }
+    .grounding-box {
+      background: var(--vellum);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      max-width: 380px; width: 100%;
+      text-align: center;
+      box-shadow: var(--monolithic-shadow);
+    }
+    .grounding-box h3 { font-size: 1.4rem; color: var(--ink); margin-bottom: 0.75rem; }
+    .grounding-box p { color: var(--muted-foreground); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.5rem; }
+    .breath-ring {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(75,106,109,0.25), rgba(75,106,109,0.05));
+      border: 2px solid var(--clinical-teal);
+      margin: 0 auto 1.5rem;
+      animation: breathe 10s infinite ease-in-out;
+    }
+    @keyframes breathe {
+      0%,100% { transform: scale(1);   opacity: 0.6; }
+      40%      { transform: scale(1.5); opacity: 1;   }
+      65%      { transform: scale(1.5); opacity: 1;   }
+    }
+    #breath-label { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--clinical-teal); margin-bottom: 1.5rem; min-height: 1.2em; }
+    .grounding-close {
+      border: 1px solid rgba(20,20,20,0.2);
+      background: transparent;
+      color: var(--ink);
+      border-radius: 100px;
+      padding: 0.5rem 1.2rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== SAFETY LAYER ===== -->
+<button id="exit-btn" aria-label="Exit MADMall">✕ EXIT</button>
+
+<button id="panic-btn" aria-label="Crisis help line — call 988">🆘 Get Help · 988</button>
+
+<button id="grounding-btn" aria-label="Open grounding reset">🌿 Grounding</button>
+
+<div id="grounding-modal" role="dialog" aria-modal="true" aria-label="Grounding reset">
+  <div class="grounding-box" id="grounding-inner">
+    <h3>Box Breathing</h3>
+    <p>A simple 4 — 4 — 6 pattern to settle the chest.<br>Follow the ring. There is no rush.</p>
+    <div class="breath-ring" id="breath-ring"></div>
+    <div id="breath-label">BREATHE IN</div>
+    <button class="grounding-close" id="grounding-close-btn">Close</button>
+  </div>
+</div>
+
+<!-- ===== PAGE ===== -->
+<main>
+
+  <!-- Header -->
+  <div class="container">
+    <header class="site-header">
+      <div class="logo">
+        <span class="logo-dot"></span>
+        <span class="logo-text">MADMALL</span>
+      </div>
+      <span class="status-pill">● ALL TLC INVARIANTS PASSING</span>
+    </header>
+  </div>
+
+  <!-- Hero -->
+  <div class="container hero-section">
+    <div class="hero-wrap animate-fade-in">
+      <img class="hero-img" src="public/madmall/sanctuary.jpeg" alt="Three Black women of different ages, sizes, and skin tones, standing together in a sunlit sanctuary atrium" />
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <p class="hero-eyebrow">The Atrium · A Home Away From Home</p>
+        <h1 class="hero-h1">The mall,<br>made soft.</h1>
+        <p class="hero-sub">A governed cultural sanctuary for Black women navigating Graves&rsquo; disease — and the people who hold them. Move at your pace. Leave whenever you want. Rest, sister.</p>
+        <div class="hero-ctas">
+          <a href="#wellness" class="btn-gold">Enter the Wellness Rooms</a>
+          <a href="#directory" class="btn-monolithic">See the directory</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mission -->
+  <div class="container">
+    <section class="mission">
+      <p class="viz-label mission-eyebrow" style="color:var(--muted-foreground);letter-spacing:0.22em;">Why this place exists</p>
+      <p class="mission-body">
+        For Black women, Graves&rsquo; disease is too often caught late and treated as if it were someone else&rsquo;s body. The disparity can turn a manageable condition into a life-threatening one. <span style="color:var(--soul-gold);">MADMall is built for your body — not adapted to it.</span>
+      </p>
+    </section>
+
+    <!-- Directory -->
+    <section id="directory" class="directory">
+      <p class="viz-label dir-eyebrow" style="color:var(--muted-foreground);letter-spacing:0.22em;">The Directory · Seven Rooms</p>
+      <div class="dir-grid">
+        <a href="#retail"   class="viz-card dir-card"><span class="soul-tag" style="background:var(--soul-gold);">SHOP</span>   <h3>The Retail Floor</h3>    <span class="dir-num">01</span></a>
+        <a href="#jazz"     class="viz-card dir-card"><span class="soul-tag" style="background:var(--clinical-teal);">LISTEN</span> <h3>Sanctuary Jazz</h3>       <span class="dir-num">02</span></a>
+        <a href="#comedy"   class="viz-card dir-card"><span class="soul-tag" style="background:var(--terracotta);">LAUGH</span>  <h3>Collective Wit</h3>       <span class="dir-num">03</span></a>
+        <a href="#wellness" class="viz-card dir-card"><span class="soul-tag" style="background:var(--clinical-teal);">REST</span>   <h3>The Wellness Rooms</h3>  <span class="dir-num">04</span></a>
+        <a href="#learning" class="viz-card dir-card"><span class="soul-tag" style="background:var(--soul-gold);">LEARN</span>  <h3>The Learning Hall</h3>   <span class="dir-num">05</span></a>
+        <a href="#commons"  class="viz-card dir-card"><span class="soul-tag" style="background:var(--terracotta);">GATHER</span> <h3>The Commons</h3>          <span class="dir-num">06</span></a>
+        <a href="#care"     class="viz-card dir-card"><span class="soul-tag" style="background:var(--clinical-teal);">CARE</span>   <h3>The Care Desk</h3>        <span class="dir-num">07</span></a>
+      </div>
+    </section>
+  </div>
+
+  <!-- Rooms -->
+  <div class="container">
+
+    <!-- RETAIL -->
+    <section id="retail" class="room-band">
+      <div class="frame"><img class="room-img" src="public/madmall/apparell.jpeg" alt="A plus-size Black woman in elegant layered cream and terracotta clothing" /></div>
+      <div class="room-text">
+        <div class="kicker"><span class="soul-tag" style="background:var(--soul-gold);">SHOP</span> <span class="kicker-label">The Retail Floor</span></div>
+        <h2 class="room-h2">Apparel that thinks in degrees</h2>
+        <p class="room-body">A thyroid body negotiates with the weather differently — cool at dawn, flushed by midmorning, icy by afternoon. Every piece is graded against a thermal-shift rubric, so your clothes move with you instead of fighting you.</p>
+        <ul class="room-list">
+          <li><span class="item-title">Wool-silk neck warmer</span><span class="item-desc">A removable dimmer switch for your most thermally sensitive place.</span></li>
+          <li><span class="item-title">Merino base layers</span><span class="item-desc">Carries moisture out; warm even when damp. Never scratchy.</span></li>
+          <li><span class="item-title">Linen day pieces</span><span class="item-desc">Open weave, fast drying — breathes when the flush arrives.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- JAZZ -->
+    <section id="jazz" class="room-band">
+      <div class="room-text">
+        <div class="kicker"><span class="soul-tag" style="background:var(--clinical-teal);">LISTEN</span> <span class="kicker-label">Sanctuary Jazz · Monthly</span></div>
+        <h2 class="room-h2">Music that settles the chest</h2>
+        <p class="room-body">A sit-and-listen evening drawn from the standards and the spirituals. Dim lights, seated rows, no required posture. Bring blankets, low conversation, and the body you have tonight.</p>
+        <div class="pills">
+          <span class="status-pill">TWO-HOUR SET</span>
+          <span class="status-pill">BLANKETS WELCOME</span>
+          <span class="status-pill">RECORDED FOR THE ARCHIVE</span>
+        </div>
+      </div>
+      <div class="frame" style="order:-1;" id="jazz-img-wrap"><img class="room-img" src="public/madmall/jazz.jpeg" alt="A Black woman with locs, eyes closed, listening in warm lounge light" /></div>
+    </section>
+
+    <!-- COMEDY -->
+    <section id="comedy" class="room-band">
+      <div class="frame"><img class="room-img" src="public/madmall/comedy.jpeg" alt="Two Black women laughing together in warm golden light" /></div>
+      <div class="room-text">
+        <div class="kicker"><span class="soul-tag" style="background:var(--terracotta);">LAUGH</span> <span class="kicker-label">Collective Wit · Biweekly</span></div>
+        <h2 class="room-h2">Laughter that doesn&rsquo;t punch down</h2>
+        <p class="room-body">A comedy showcase vetted on a single rule: earn the laugh from inside the community, never at its expense. Live captioning on every set, and content warnings posted in advance for anything that touches grief, illness, or the clinic.</p>
+        <div class="pills">
+          <span class="status-pill">LIVE CAPTIONED</span>
+          <span class="status-pill">OPEN-MIC SLOT</span>
+          <span class="status-pill">SLIDING SCALE</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- WELLNESS -->
+    <section id="wellness" class="room-band">
+      <div class="room-text">
+        <div class="kicker"><span class="soul-tag" style="background:var(--clinical-teal);">REST</span> <span class="kicker-label">The Wellness Rooms</span></div>
+        <h2 class="room-h2">Grounding rituals for thyroid storms</h2>
+        <p class="room-body">When a storm raises the noise floor, these are companions for the time between noticing and being seen. Not a substitute for clinician care — they sit beside it.</p>
+        <div class="wellness-grid">
+          <div class="viz-card" style="padding:1.25rem;font-size:.9rem;line-height:1.6;color:var(--ink);">A cool hand on the sternum.</div>
+          <div class="viz-card" style="padding:1.25rem;font-size:.9rem;line-height:1.6;color:var(--ink);">Two slow exhales, each longer than the last.</div>
+          <div class="viz-card" style="padding:1.25rem;font-size:.9rem;line-height:1.6;color:var(--ink);">A walk to the room with the most windows.</div>
+          <div class="viz-card" style="padding:1.25rem;font-size:.9rem;line-height:1.6;color:var(--ink);">A name said aloud — yours, or a beloved one&rsquo;s.</div>
+        </div>
+        <div class="wellness-note"><strong>If symptoms escalate</strong> — clinician routing is one tap away, and you can leave any room, end any session, with no guilt and no second prompt.</div>
+      </div>
+      <div class="frame" style="order:-1;" id="wellness-img-wrap"><img class="room-img" src="public/madmall/wellness.jpeg" alt="A Black woman with a short natural TWA, hand on her sternum, breathing" /></div>
+    </section>
+
+    <!-- LEARNING -->
+    <section id="learning" class="room-band">
+      <div class="frame"><img class="room-img" src="public/madmall/learning.jpeg" alt="A Black woman with reading glasses studying her lab results with calm authority" /></div>
+      <div class="room-text">
+        <div class="kicker"><span class="soul-tag" style="background:var(--soul-gold);">LEARN</span> <span class="kicker-label">The Learning Hall</span></div>
+        <h2 class="room-h2">Read your body without panic</h2>
+        <p class="room-body">The page from the lab is a snapshot, not a verdict. Here the authority over your body stays with you — we hand you the language, you keep the pen.</p>
+        <ul class="room-list">
+          <li><span class="item-title">Plain-language explainers</span><span class="item-desc">What TSH, Free T4, Free T3, and TPO antibodies actually mean.</span></li>
+          <li><span class="item-title">Peer-led discussion circles</span><span class="item-desc">Sisters who have read these numbers before, reading them with you.</span></li>
+          <li><span class="item-title">Clinician office hours</span><span class="item-desc">Bring your questions; leave with a plan and a name you can reach.</span></li>
+        </ul>
+      </div>
+    </section>
+
+  </div><!-- /container -->
+
+  <!-- COMMONS — full bleed -->
+  <div class="container">
+    <section id="commons" class="commons-wrap">
+      <img class="commons-img" src="public/madmall/commons.jpeg" alt="A circle of Black women of many ages, sizes, and skin tones, holding each other in warm light" />
+      <div class="commons-overlay"></div>
+      <div class="commons-text">
+        <div class="kicker"><span class="soul-tag" style="background:var(--terracotta);">GATHER</span> <span class="kicker-label commons-kicker-label">The Commons</span></div>
+        <h2 class="commons-h2">Where we hold each other</h2>
+        <p class="commons-body">You are not &ldquo;just like every other patient.&rdquo; The Commons is built around your specific, lived experience — member-led, never extractive. Newly-diagnosed circles, caregiver gatherings, and rest-as-resistance evenings.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- CARE -->
+  <div class="container">
+    <section id="care" class="room-band">
+      <div class="room-text">
+        <div class="kicker"><span class="soul-tag" style="background:var(--clinical-teal);">CARE</span> <span class="kicker-label">The Care Desk</span></div>
+        <h2 class="room-h2">The door opens both ways</h2>
+        <p class="room-body">The Care Desk is where the platform&rsquo;s promises live. We never pretend to be your doctor — we route you to real ones. We never trap you. We never track you in secret.</p>
+        <ul class="room-list teal">
+          <li><span class="item-title">No medical authority</span><span class="item-desc">We surface information and route to clinicians — we do not diagnose or prescribe.</span></li>
+          <li><span class="item-title">Cultural fidelity</span><span class="item-desc">Every word here is reviewed for safety without exploitation.</span></li>
+          <li><span class="item-title">Exit sovereignty</span><span class="item-desc">Leave any room, end any session, delete any data — one tap, no guilt.</span></li>
+          <li><span class="item-title">No covert tracking</span><span class="item-desc">No telemetry without your consent. Ever.</span></li>
+        </ul>
+      </div>
+      <div class="frame" id="care-img-wrap"><img class="room-img" src="public/madmall/care.jpeg" alt="An elder Black woman and a younger woman, a gentle hand on the shoulder" /></div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <div class="container">
+    <footer class="site-footer">
+      <p class="viz-label" style="color:var(--muted-foreground);letter-spacing:0.2em;">
+        MADMall · Built on the ZMUX Sanctuary Design System · The Living Constitution
+      </p>
+    </footer>
+  </div>
+
+</main>
+
+<script>
+  // ---- Exit sovereignty ----
+  document.getElementById('exit-btn').addEventListener('click', function() {
+    window.location.href = 'https://www.google.com';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.shiftKey && e.key === 'Escape') window.location.href = 'https://www.google.com';
+  });
+
+  // ---- Panic button ----
+  document.getElementById('panic-btn').addEventListener('click', function() {
+    window.location.href = 'tel:988';
+  });
+
+  // ---- Grounding modal ----
+  var modal   = document.getElementById('grounding-modal');
+  var closeBtn = document.getElementById('grounding-close-btn');
+  var label   = document.getElementById('breath-label');
+
+  document.getElementById('grounding-btn').addEventListener('click', function() {
+    modal.classList.add('open');
+    startBreathing();
+  });
+
+  closeBtn.addEventListener('click', function() {
+    modal.classList.remove('open');
+    stopBreathing();
+  });
+
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) { modal.classList.remove('open'); stopBreathing(); }
+  });
+
+  var breathTimer = null;
+  var phases = [
+    { text: 'BREATHE IN',  duration: 4000 },
+    { text: 'HOLD',        duration: 4000 },
+    { text: 'BREATHE OUT', duration: 6000 },
+    { text: 'HOLD',        duration: 2000 },
+  ];
+  var phaseIdx = 0;
+
+  function runPhase() {
+    label.textContent = phases[phaseIdx].text;
+    breathTimer = setTimeout(function() {
+      phaseIdx = (phaseIdx + 1) % phases.length;
+      runPhase();
+    }, phases[phaseIdx].duration);
+  }
+  function startBreathing() { phaseIdx = 0; runPhase(); }
+  function stopBreathing()  { clearTimeout(breathTimer); label.textContent = 'BREATHE IN'; }
+
+  // ---- Responsive: flip jazz/wellness image order on desktop ----
+  function fixOrder() {
+    var w = window.innerWidth;
+    ['jazz-img-wrap','wellness-img-wrap'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.style.order = w >= 768 ? '1' : '-1';
+    });
+  }
+  fixOrder();
+  window.addEventListener('resize', fixOrder);
+</script>
+</body>
+</html>
